@@ -39,4 +39,9 @@ add_library(imguiplot STATIC
 
 target_include_directories(imguiplot PRIVATE ${imguiIncludeDir})
 target_include_directories(imguiplot PUBLIC include/)
-enableStrictOptions(imguiplot)
+
+if(WIN32)
+    add_definitions(-DNOMINMAX)
+else()
+    enableStrictOptions(imguiplot)
+endif()
