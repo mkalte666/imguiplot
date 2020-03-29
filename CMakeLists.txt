@@ -29,12 +29,14 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_CXX_STANDARD 17)
 project(LAA)
 
-option(imguiIncludeDir "Path to imgui headers" imgui/)
+set(imguiIncludeDir imgui/ CACHE PATH "Path to imgui headers")
 
 add_library(imguiplot STATIC 
-    include/imguiplotconfig.h
-    include/imguiplot.h
-    include/imguiplot.cpp)
+        include/imguiplotconfig.h
+        include/imguiplot.h
+        src/imguiplot.cpp
+        src/imguiplotconfig.cpp)
 
 target_include_directories(imguiplot PRIVATE ${imguiIncludeDir})
+target_include_directories(imguiplot PUBLIC include/)
 enableStrictOptions(imguiplot)
