@@ -81,7 +81,7 @@ void BeginPlot(const PlotConfig& config) noexcept
     gInternalConfigStack.push(internalConfig);
 }
 
-void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback, bool selected) noexcept
+void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept
 {
     IM_ASSERT_USER_ERROR(!gConfigStack.empty(), "BeginPlot() needs to be called before Plot()");
     IM_ASSERT(gConfigStack.size() == gInternalConfigStack.size());
@@ -114,7 +114,7 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback, bo
         lastY = newY;
     }
 
-    if (selected && hovered && internalConfig.innerBb.Contains(GImGui->IO.MousePos)) {
+    if (sourceConfig.active && hovered && internalConfig.innerBb.Contains(GImGui->IO.MousePos)) {
         auto x = GImGui->IO.MousePos.x - internalConfig.innerBb.Min.x;
         auto xVal = config.xAxisConfig.pixelToValue(x, internalConfig.innerBb.GetWidth());
         auto index = sourceConfig.valueToArrayIndex(xVal);
@@ -126,7 +126,9 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback, bo
         pos1.x = GImGui->IO.MousePos.x;
         internalConfig.window->DrawList->AddLine(pos0, pos1, 0xFFFFFFFFu);
 
-        ImGui::SetTooltip("%f [%zu]: %f", xVal, index, v);
+        ImGui::Begin("plot tooltip", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::TextColored(sourceConfig.color, "%f [%zu]: %f", xVal, index, v);
+        ImGui::End();
     }
 }
 

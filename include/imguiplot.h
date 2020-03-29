@@ -24,7 +24,7 @@
 using PlotCallback = std::function<double(size_t index)>;
 
 void BeginPlot(const PlotConfig& config) noexcept;
-void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback, bool selected = true) noexcept;
+void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept;
 void EndPlot() noexcept;
 
 #endif // imguiplot_imguiplot_h

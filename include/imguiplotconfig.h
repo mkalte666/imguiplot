@@ -72,8 +72,10 @@ struct PlotConfig {
  * \brief Config for a source
  */
 struct PlotSourceConfig {
+    /// if this plot is active. Only affects if a tooltip is drawn
+    bool active = true;
     /// number of elements in source
-    size_t count;
+    size_t count = 0;
     /// on source[0], this is the value on the x axis
     double xMin = 0.0;
     /// on source[count-1], this is the value on the x axis
