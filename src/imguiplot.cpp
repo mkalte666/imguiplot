@@ -72,8 +72,8 @@ void BeginPlot(const PlotConfig& config) noexcept
 
     for (auto&& yGridVal : yGridVals) {
         auto pixelY = config.yAxisConfig.valueToPixel(yGridVal, internalConfig.innerBb.GetHeight());
-        ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(0.0, internalConfig.innerBb.GetHeight()-pixelY);
-        ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(internalConfig.innerBb.GetWidth(), internalConfig.innerBb.GetHeight()-pixelY);
+        ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(0.0, internalConfig.innerBb.GetHeight() - pixelY);
+        ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(internalConfig.innerBb.GetWidth(), internalConfig.innerBb.GetHeight() - pixelY);
         internalConfig.window->DrawList->AddLine(p0, p1, 0x99999999);
         internalConfig.window->DrawList->AddText(p0, 0x99999999, toStringPrecision(yGridVal, 2).c_str());
     }
@@ -94,7 +94,6 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) no
     if (sourceConfig.count < 2u) {
         return;
     }
-
 
     float lastX = 0.0F;
     float lastY = 0.0F;

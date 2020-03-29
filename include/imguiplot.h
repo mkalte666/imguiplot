@@ -17,15 +17,14 @@
 #ifndef imguiplot_imguiplot_h
 #define imguiplot_imguiplot_h
 
-#include <functional>
-#include "imguiplotconfig.h"
 #include "imgui.h"
+#include "imguiplotconfig.h"
+#include <functional>
 
 using PlotCallback = std::function<double(size_t index)>;
 
 void BeginPlot(const PlotConfig& config) noexcept;
 void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept;
 void EndPlot() noexcept;
-
 
 #endif // imguiplot_imguiplot_h

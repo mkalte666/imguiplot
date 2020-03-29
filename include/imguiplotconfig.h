@@ -22,7 +22,6 @@
 
 #include <imgui.h>
 
-
 /**
  * \brief Config for a single axis.
  */
@@ -57,8 +56,7 @@ struct AxisConfig {
 /**
  * \brief Configures a plot and its axis
  */
-struct PlotConfig
-{
+struct PlotConfig {
     /// Label/Name of the plot. Used as ID
     std::string label = "Plot";
     /// Size of the plot. Set to 0.0F for it to try fitting the window

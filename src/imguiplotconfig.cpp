@@ -21,7 +21,7 @@
 double AxisConfig::logConvert(double value) const noexcept
 {
     if (enableLogScale) {
-        value = std::log((min + (max-min)*value) / min) / std::log(max / min);
+        value = std::log((min + (max - min) * value) / min) / std::log(max / min);
     }
 
     return value;
@@ -30,7 +30,7 @@ double AxisConfig::logConvert(double value) const noexcept
 double AxisConfig::logConvertBack(double value) const noexcept
 {
     if (enableLogScale) {
-        value = (std::pow(max/min, value) * min - min) / (max - min);
+        value = (std::pow(max / min, value) * min - min) / (max - min);
     }
 
     return value;
@@ -38,18 +38,18 @@ double AxisConfig::logConvertBack(double value) const noexcept
 
 double AxisConfig::pixelToValue(float pixel, float pixelRange) const noexcept
 {
-    double logified = static_cast<double>(pixel)/static_cast<double>(pixelRange);
+    double logified = static_cast<double>(pixel) / static_cast<double>(pixelRange);
     double linear = logConvertBack(logified);
 
-    return min + linear*(max-min);
+    return min + linear * (max - min);
 }
 
 float AxisConfig::valueToPixel(double value, float pixelRange) const noexcept
 {
-    double linear = (value-min)/(max-min);
+    double linear = (value - min) / (max - min);
     double logified = logConvert(linear);
 
-    return static_cast<float>(std::max(0.0,std::min(1.0,logified)))*pixelRange;
+    return static_cast<float>(std::max(0.0, std::min(1.0, logified))) * pixelRange;
 }
 
 bool AxisConfig::isInAxisRange(double value) const noexcept
@@ -76,8 +76,8 @@ std::vector<double> AxisConfig::calcGridValues() const noexcept
             if (i != 0 && valDown > min && isInAxisRange(valDown)) {
                 result.push_back(valDown);
             }
-            valUp = gridHint * std::pow(10, static_cast<double>(i)*gridInterval);
-            valDown = gridHint / std::pow(10, static_cast<double>(i)*gridInterval);
+            valUp = gridHint * std::pow(10, static_cast<double>(i) * gridInterval);
+            valDown = gridHint / std::pow(10, static_cast<double>(i) * gridInterval);
         }
         return result;
     }
@@ -102,7 +102,7 @@ std::vector<double> AxisConfig::calcGridValues() const noexcept
 size_t PlotSourceConfig::valueToArrayIndex(double value) const noexcept
 {
     if (value > xMax) {
-        return count-1;
+        return count - 1;
     }
 
     if (value < xMin) {
@@ -110,7 +110,7 @@ size_t PlotSourceConfig::valueToArrayIndex(double value) const noexcept
     }
 
     auto dCount = static_cast<double>(count);
-    auto dIndex = std::round(dCount*(value-xMin)/(xMax-xMin));
+    auto dIndex = std::round(dCount * (value - xMin) / (xMax - xMin));
     return static_cast<size_t>(dIndex);
 }
 
@@ -119,5 +119,5 @@ double PlotSourceConfig::arrayIndexToValue(size_t arrayIndex) const noexcept
     auto dCount = static_cast<double>(count);
     auto dIndex = static_cast<double>(arrayIndex);
 
-    return xMin + (xMax-xMin)*(dIndex/dCount);
+    return xMin + (xMax - xMin) * (dIndex / dCount);
 }
