@@ -81,7 +81,7 @@ void BeginPlot(const PlotConfig& config) noexcept
     gInternalConfigStack.push(internalConfig);
 }
 
-void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept
+void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback, bool selected) noexcept
 {
     IM_ASSERT_USER_ERROR(!gConfigStack.empty(), "BeginPlot() needs to be called before Plot()");
     IM_ASSERT(gConfigStack.size() == gInternalConfigStack.size());
@@ -114,7 +114,7 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) no
         lastY = newY;
     }
 
-    if (hovered && internalConfig.innerBb.Contains(GImGui->IO.MousePos)) {
+    if (selected && hovered && internalConfig.innerBb.Contains(GImGui->IO.MousePos)) {
         auto x = GImGui->IO.MousePos.x - internalConfig.innerBb.Min.x;
         auto xVal = config.xAxisConfig.pixelToValue(x, internalConfig.innerBb.GetWidth());
         auto index = sourceConfig.valueToArrayIndex(xVal);
@@ -126,7 +126,7 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) no
         pos1.x = GImGui->IO.MousePos.x;
         internalConfig.window->DrawList->AddLine(pos0, pos1, 0xFFFFFFFFu);
 
-        ImGui::SetTooltip("%f [%zu]->%f", xVal, index, v);
+        ImGui::SetTooltip("%f [%zu]: %f", xVal, index, v);
     }
 }
 
