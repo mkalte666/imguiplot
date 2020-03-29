@@ -106,7 +106,7 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
         double yValue = callback(arrayIndex);
         auto newY = config.yAxisConfig.valueToPixel(yValue, internalConfig.innerBb.GetHeight());
 
-        if (x != 0 && config.xAxisConfig.isInAxisRange(xValue)) {
+        if (x != 0 && config.xAxisConfig.isInAxisRange(xValue) && config.yAxisConfig.isInAxisRange(yValue)) {
             ImVec2 pos1 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(newX), internalConfig.innerBb.GetHeight() - static_cast<float>(newY));
             ImVec2 pos0 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(lastX), internalConfig.innerBb.GetHeight() - static_cast<float>(lastY));
             internalConfig.window->DrawList->AddLine(pos0, pos1, sourceConfig.color);
