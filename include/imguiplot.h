@@ -23,8 +23,25 @@
 
 using PlotCallback = std::function<double(size_t index)>;
 
+/**
+ * \brief Struct returned by Plot() that holds infos on if and where a plot was clicked on
+ */
+struct PlotClickInfo {
+    /// if the plot was clicked.
+    bool clicked = false;
+    /// where, on the x axis, the plot was clicked
+    double x = 0.0;
+    /// the value of the plot at x
+    double y = 0.0;
+    /// the index where the click happend
+    size_t index = 0;
+
+    /// returns true if ckicked is true, for convenience
+    explicit operator bool() const noexcept;
+};
+
 void BeginPlot(const PlotConfig& config) noexcept;
-void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept;
+PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept;
 void EndPlot() noexcept;
 
 #endif // imguiplot_imguiplot_h

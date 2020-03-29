@@ -81,10 +81,12 @@ void BeginPlot(const PlotConfig& config) noexcept
     gInternalConfigStack.push(internalConfig);
 }
 
-void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept
+PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept
 {
     IM_ASSERT_USER_ERROR(!gConfigStack.empty(), "BeginPlot() needs to be called before Plot()");
     IM_ASSERT(gConfigStack.size() == gInternalConfigStack.size());
+
+    PlotClickInfo clickInfo;
     auto config = gConfigStack.top();
     auto internalConfig = gInternalConfigStack.top();
 
@@ -92,7 +94,7 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) no
     const bool hovered = ImGui::ItemHoverable(internalConfig.frameBb, id);
 
     if (sourceConfig.count < 2u) {
-        return;
+        return clickInfo;
     }
 
     float lastX = 0.0F;
@@ -129,7 +131,16 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) no
         ImGui::Begin("plot tooltip", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::TextColored(sourceConfig.color, "%f [%zu]: %f", xVal, index, v);
         ImGui::End();
+
+        if (ImGui::IsItemClicked()) {
+            clickInfo.clicked = true;
+            clickInfo.x = xVal;
+            clickInfo.y = v;
+            clickInfo.index = index;
+        }
     }
+
+    return clickInfo;
 }
 
 void EndPlot() noexcept
@@ -149,4 +160,9 @@ void EndPlot() noexcept
 
     gConfigStack.pop();
     gInternalConfigStack.pop();
+}
+
+PlotClickInfo::operator bool() const noexcept
+{
+    return clicked;
 }
