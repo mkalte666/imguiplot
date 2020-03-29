@@ -86,6 +86,9 @@ struct PlotSourceConfig {
 
     /// transform an array index to a value
     [[nodiscard]] double arrayIndexToValue(size_t arrayIndex) const noexcept;
+
+    /// color
+    ImColor color = 0xFFFFFFFF;
 };
 
 #endif // imguiplot_imguiplot_h

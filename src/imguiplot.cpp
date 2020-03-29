@@ -108,7 +108,7 @@ void Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) no
         if (x != 0 && config.xAxisConfig.isInAxisRange(xValue)) {
             ImVec2 pos1 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(newX), internalConfig.innerBb.GetHeight() - static_cast<float>(newY));
             ImVec2 pos0 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(lastX), internalConfig.innerBb.GetHeight() - static_cast<float>(lastY));
-            internalConfig.window->DrawList->AddLine(pos0, pos1, 0xFFFFFFFFu);
+            internalConfig.window->DrawList->AddLine(pos0, pos1, sourceConfig.color);
         }
 
         lastX = newX;
