@@ -38,7 +38,7 @@ add_library(imguiplot STATIC
         src/imguiplotconfig.cpp
         src/antialiasing.cpp)
 
-target_include_directories(imguiplot PRIVATE ${imguiIncludeDir})
+target_include_directories(imguiplot SYSTEM PRIVATE ${imguiIncludeDir})
 target_include_directories(imguiplot PUBLIC include/)
 
 if(WIN32)

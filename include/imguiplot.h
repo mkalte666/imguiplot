@@ -17,7 +17,7 @@
 #ifndef imguiplot_imguiplot_h
 #define imguiplot_imguiplot_h
 
-#include "imgui.h"
+#include <imgui.h>
 #include "imguiplotconfig.h"
 #include <functional>
 

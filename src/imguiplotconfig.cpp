@@ -61,9 +61,17 @@ std::vector<double> AxisConfig::calcGridValues() const noexcept
 {
     std::vector<double> result;
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
     if (gridInterval == 0.0) {
         return result;
     }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
     if (enableLogScale) {
         auto valUp = gridHint;
