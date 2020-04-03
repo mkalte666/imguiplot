@@ -77,6 +77,10 @@ struct PlotConfig {
     std::string label = "Plot";
     /// Size of the plot. Set to 0.0F for it to try fitting the window
     ImVec2 size = ImVec2(0.0F, 0.0F);
+    /// line thickness
+    float lineThickness = 1.0F;
+    /// active plot line thickness
+    float activeLineThickness = 2.0;
 
     /// X axis config
     AxisConfig xAxisConfig = {};
