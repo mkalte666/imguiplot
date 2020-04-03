@@ -54,6 +54,8 @@ struct AxisConfig {
     double gridHint = 0.0;
     /// set to true to enable logscale on the x axis. min must be non-zero!
     bool enableLogScale = false;
+    /// precision of an axis. Affects double->string conversion for tooltip and axis
+    long precision = 5;
 
     /// move a 0..1 range into logscale
     [[nodiscard]] double logConvert(double value) const noexcept;

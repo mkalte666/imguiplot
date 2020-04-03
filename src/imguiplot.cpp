@@ -71,7 +71,7 @@ void BeginPlot(const PlotConfig& config) noexcept
         ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(pixelX, 0.0);
         ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(pixelX, internalConfig.innerBb.GetHeight());
         internalConfig.window->DrawList->AddLine(p0, p1, ImGui::GetColorU32(ImGuiCol_Border));
-        internalConfig.window->DrawList->AddText(p1, ImGui::GetColorU32(ImGuiCol_Text), toStringPrecision(xGridVal, 2).c_str());
+        internalConfig.window->DrawList->AddText(p1, ImGui::GetColorU32(ImGuiCol_Text), toStringPrecision(xGridVal, config.xAxisConfig.precision).c_str());
     }
 
     for (auto&& yGridVal : yGridVals) {
@@ -79,7 +79,7 @@ void BeginPlot(const PlotConfig& config) noexcept
         ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(0.0, internalConfig.innerBb.GetHeight() - pixelY);
         ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(internalConfig.innerBb.GetWidth(), internalConfig.innerBb.GetHeight() - pixelY);
         internalConfig.window->DrawList->AddLine(p0, p1, ImGui::GetColorU32(ImGuiCol_Border));
-        internalConfig.window->DrawList->AddText(p0, ImGui::GetColorU32(ImGuiCol_Text), toStringPrecision(yGridVal, 2).c_str());
+        internalConfig.window->DrawList->AddText(p0, ImGui::GetColorU32(ImGuiCol_Text), toStringPrecision(yGridVal, config.yAxisConfig.precision).c_str());
     }
 
     gInternalConfigStack.push(internalConfig);
