@@ -99,16 +99,21 @@ double getAntiAliasingValue(const PlotCallback& callback, const PlotConfig& conf
     // shift the indices
     indexMin = indexCenter - (indexCenter - indexMin) / 2;
     indexMax = indexCenter + (indexMax - indexCenter) / 2;
-    // if we end up with the same index, we got nothing to do
-    if (indexMin == indexMax) {
+    // if we end up with the same index, or something is borked, we got nothing to do
+    if ( indexMin >= indexMax) {
         return callback(indexCenter);
     }
 
     // now we get the values that are needed for the anti alising operation
     std::vector<double> values;
     values.resize(indexMax - indexMin, 0.0);
-    for (size_t i = indexMin; i <= indexMax && i < sourceConfig.count; i++) {
-        values[i - indexMin] = callback(i);
+    for (size_t i = 0; i < values.size() && i+indexMin < sourceConfig.count; i++) {
+        values[i] = callback(i+indexMin);
+    }
+
+    // due to the count() rule, values might be empty
+    if (values.empty()) {
+        return callback(indexCenter);
     }
 
     // Select the method.
