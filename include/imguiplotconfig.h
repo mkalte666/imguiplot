@@ -23,6 +23,22 @@
 #include <imgui.h>
 
 /**
+ * \brief The Anti aliasing behaviour of a plot
+ * If the number of data points is greater than the number of points in a plot,
+ * data points are lost in the display.
+ * Often enough that is not important.
+ * However, if, for example, peaks are important, and those are only present in one data point...
+ */
+enum class AntiAliasingBehaviour {
+    Nearest, ///< No anti aliasing at all.
+    Mean, ///< the mean of all points surrounding the plotted index.
+    Min, ///< the minimum of the points surroudning the plotted index.
+    Max, ///< the maximum of the points surrounding the plotted index.
+    AbsMin, ///< the point with the minimum absolute value.
+    AbsMax, ///< the point with the maximum absolute value.
+};
+
+/**
  * \brief Config for a single axis.
  */
 struct AxisConfig {
@@ -89,6 +105,9 @@ struct PlotSourceConfig {
 
     /// color
     ImColor color = 0xFFFFFFFF;
+
+    /// anti alising behaviour for this source
+    AntiAliasingBehaviour antiAliasingBehaviour = AntiAliasingBehaviour::Nearest;
 };
 
 #endif // imguiplot_imguiplot_h

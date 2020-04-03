@@ -21,6 +21,9 @@
 #include "imguiplotconfig.h"
 #include <functional>
 
+/**
+ * \brief Callback used by Plot()
+ */
 using PlotCallback = std::function<double(size_t index)>;
 
 /**
@@ -40,8 +43,23 @@ struct PlotClickInfo {
     explicit operator bool() const noexcept;
 };
 
+/**
+ * \brief Begins a plot. Only one plot can be active at the same time.
+ * \param config
+ */
 void BeginPlot(const PlotConfig& config) noexcept;
+
+/**
+ * \brief Add a source to be plotted in the graph
+ * \param sourceConfig config of the source
+ * \param callback the callback that provides data for the source
+ * \return
+ */
 PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept;
+
+/**
+ * \brief Ends a plot
+ */
 void EndPlot() noexcept;
 
 #endif // imguiplot_imguiplot_h

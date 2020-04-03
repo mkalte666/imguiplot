@@ -19,6 +19,9 @@
 #include <sstream>
 #include <stack>
 
+// lives in  a different file
+double getAntiAliasingValue(const PlotCallback& callback, const PlotConfig& config, const PlotSourceConfig& sourceConfig, float x, float width);
+
 template <class T>
 std::string toStringPrecision(T value, long precision)
 {
@@ -101,12 +104,10 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
     float lastY = 0.0F;
     for (int x = 0; x < static_cast<int>(internalConfig.innerBb.GetWidth()); x++) {
         auto newX = static_cast<float>(x);
-        auto xValue = config.xAxisConfig.pixelToValue(newX, internalConfig.innerBb.GetWidth());
-        size_t arrayIndex = sourceConfig.valueToArrayIndex(xValue);
-        double yValue = callback(arrayIndex);
+        double yValue = getAntiAliasingValue(callback, config, sourceConfig, newX, internalConfig.innerBb.GetWidth());
         auto newY = config.yAxisConfig.valueToPixel(yValue, internalConfig.innerBb.GetHeight());
 
-        if (x != 0 && config.xAxisConfig.isInAxisRange(xValue) && config.yAxisConfig.isInAxisRange(yValue)) {
+        if (x != 0 && config.yAxisConfig.isInAxisRange(yValue)) {
             ImVec2 pos1 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(newX), internalConfig.innerBb.GetHeight() - static_cast<float>(newY));
             ImVec2 pos0 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(lastX), internalConfig.innerBb.GetHeight() - static_cast<float>(lastY));
             internalConfig.window->DrawList->AddLine(pos0, pos1, sourceConfig.color);

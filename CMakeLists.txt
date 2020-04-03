@@ -35,7 +35,8 @@ add_library(imguiplot STATIC
         include/imguiplotconfig.h
         include/imguiplot.h
         src/imguiplot.cpp
-        src/imguiplotconfig.cpp)
+        src/imguiplotconfig.cpp
+        src/antialiasing.cpp)
 
 target_include_directories(imguiplot PRIVATE ${imguiIncludeDir})
 target_include_directories(imguiplot PUBLIC include/)
