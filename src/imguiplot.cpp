@@ -60,7 +60,8 @@ void BeginPlot(const PlotConfig& config) noexcept
     internalConfig.frameBb = ImRect(internalConfig.window->DC.CursorPos, internalConfig.window->DC.CursorPos + config.size);
     internalConfig.innerBb = ImRect(internalConfig.frameBb.Min + style.FramePadding, internalConfig.frameBb.Max - style.FramePadding);
     internalConfig.totalBb = ImRect(internalConfig.frameBb.Min, internalConfig.frameBb.Max + ImVec2(internalConfig.labelSize.x > 0.0f ? style.ItemInnerSpacing.x + internalConfig.labelSize.x : 0.0f, 10.0F));
-    ImGui::RenderFrame(internalConfig.frameBb.Min, internalConfig.frameBb.Max, ImGui::GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
+    ImGui::RenderFrame(internalConfig.frameBb.Min, internalConfig.frameBb.Max, ImGui::GetColorU32(ImGuiCol_WindowBg), true, style.FrameRounding);
+    internalConfig.window->DrawList->AddRect(internalConfig.frameBb.Min, internalConfig.frameBb.Max, ImGui::GetColorU32(ImGuiCol_FrameBg));
 
     auto xGridVals = config.xAxisConfig.calcGridValues();
     auto yGridVals = config.yAxisConfig.calcGridValues();
@@ -69,16 +70,16 @@ void BeginPlot(const PlotConfig& config) noexcept
         auto pixelX = config.xAxisConfig.valueToPixel(xGridVal, internalConfig.innerBb.GetWidth());
         ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(pixelX, 0.0);
         ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(pixelX, internalConfig.innerBb.GetHeight());
-        internalConfig.window->DrawList->AddLine(p0, p1, 0x99999999);
-        internalConfig.window->DrawList->AddText(p1, 0x99999999, toStringPrecision(xGridVal, 2).c_str());
+        internalConfig.window->DrawList->AddLine(p0, p1, ImGui::GetColorU32(ImGuiCol_Border));
+        internalConfig.window->DrawList->AddText(p1, ImGui::GetColorU32(ImGuiCol_Text), toStringPrecision(xGridVal, 2).c_str());
     }
 
     for (auto&& yGridVal : yGridVals) {
         auto pixelY = config.yAxisConfig.valueToPixel(yGridVal, internalConfig.innerBb.GetHeight());
         ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(0.0, internalConfig.innerBb.GetHeight() - pixelY);
         ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(internalConfig.innerBb.GetWidth(), internalConfig.innerBb.GetHeight() - pixelY);
-        internalConfig.window->DrawList->AddLine(p0, p1, 0x99999999);
-        internalConfig.window->DrawList->AddText(p0, 0x99999999, toStringPrecision(yGridVal, 2).c_str());
+        internalConfig.window->DrawList->AddLine(p0, p1, ImGui::GetColorU32(ImGuiCol_Border));
+        internalConfig.window->DrawList->AddText(p0, ImGui::GetColorU32(ImGuiCol_Text), toStringPrecision(yGridVal, 2).c_str());
     }
 
     gInternalConfigStack.push(internalConfig);
@@ -129,7 +130,7 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
         pos0.x = GImGui->IO.MousePos.x;
         ImVec2 pos1 = internalConfig.innerBb.Max;
         pos1.x = GImGui->IO.MousePos.x;
-        internalConfig.window->DrawList->AddLine(pos0, pos1, 0xFFFFFFFFu);
+        internalConfig.window->DrawList->AddLine(pos0, pos1, ImGui::GetColorU32(ImGuiCol_TextDisabled));
 
         ImGui::Begin("plot tooltip", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::TextColored(sourceConfig.color, "%f [%zu]: %f", xVal, index, v);
@@ -159,7 +160,7 @@ void EndPlot() noexcept
     ImGui::ItemSize(internalConfig.totalBb, style.FramePadding.y);
     if (!ImGui::ItemAdd(internalConfig.totalBb, 0, &internalConfig.frameBb)) {
         return;
-    }
+    };
 
     gConfigStack.pop();
     gInternalConfigStack.pop();
