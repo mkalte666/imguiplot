@@ -82,6 +82,11 @@ void BeginPlot(const PlotConfig& config) noexcept
         internalConfig.window->DrawList->AddText(p0, ImGui::GetColorU32(ImGuiCol_Text), toStringPrecision(yGridVal, config.yAxisConfig.precision).c_str());
     }
 
+    ImGui::ItemSize(internalConfig.totalBb, style.FramePadding.y);
+    if (!ImGui::ItemAdd(internalConfig.totalBb, 0, &internalConfig.frameBb)) {
+        return;
+    };
+
     gInternalConfigStack.push(internalConfig);
 }
 
@@ -151,16 +156,6 @@ void EndPlot() noexcept
 {
     IM_ASSERT_USER_ERROR(!gConfigStack.empty(), "BeginPlot() needs to be called before EndPlot()");
     IM_ASSERT(gConfigStack.size() == gInternalConfigStack.size());
-    auto config = gConfigStack.top();
-    auto internalConfig = gInternalConfigStack.top();
-
-    ImGuiContext& g = *GImGui;
-    const ImGuiStyle& style = g.Style;
-
-    ImGui::ItemSize(internalConfig.totalBb, style.FramePadding.y);
-    if (!ImGui::ItemAdd(internalConfig.totalBb, 0, &internalConfig.frameBb)) {
-        return;
-    };
 
     gConfigStack.pop();
     gInternalConfigStack.pop();
