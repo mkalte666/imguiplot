@@ -54,17 +54,23 @@ double aaAbsMin(const std::vector<double>& values)
 {
     double result = std::numeric_limits<double>::max();
     for (const auto& v : values) {
-        result = std::min(result, std::abs(v));
+        if (std::abs(v) < std::abs(result)) {
+            result = v;
+        }
     }
+
     return result;
 }
 
 double aaAbsMax(const std::vector<double>& values)
 {
-    double result = std::numeric_limits<double>::min();
+    double result = 0.0;
     for (const auto& v : values) {
-        result = std::max(result, std::abs(v));
+        if (std::abs(v) > std::abs(result)) {
+            result = v;
+        }
     }
+
     return result;
 }
 
