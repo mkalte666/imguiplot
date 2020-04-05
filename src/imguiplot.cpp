@@ -128,8 +128,7 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
     if (sourceConfig.active && hovered && internalConfig.innerBb.Contains(GImGui->IO.MousePos)) {
         auto x = GImGui->IO.MousePos.x - internalConfig.innerBb.Min.x;
         auto xVal = config.xAxisConfig.pixelToValue(x, internalConfig.innerBb.GetWidth());
-        auto index = sourceConfig.valueToArrayIndex(xVal);
-        double v = callback(index);
+        auto v = getAntiAliasingValue(callback, config, sourceConfig, x, internalConfig.innerBb.GetWidth());
 
         ImVec2 pos0 = internalConfig.innerBb.Min;
         pos0.x = GImGui->IO.MousePos.x;
@@ -138,18 +137,74 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
         internalConfig.window->DrawList->AddLine(pos0, pos1, ImGui::GetColorU32(ImGuiCol_TextDisabled));
 
         ImGui::Begin("plot tooltip", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::TextColored(sourceConfig.color, "%f [%zu]: %f", xVal, index, v);
+        ImGui::TextColored(sourceConfig.color, "%f: %f", xVal, v);
         ImGui::End();
 
         if (ImGui::IsItemClicked()) {
             clickInfo.clicked = true;
             clickInfo.x = xVal;
             clickInfo.y = v;
-            clickInfo.index = index;
         }
     }
 
     return clickInfo;
+}
+
+void PlotMarker(const PlotMarkerConfig& markerConfig, const PlotClickInfo& clickInfo) noexcept
+{
+    if (!clickInfo) {
+        return;
+    }
+
+    PlotMarker(markerConfig, clickInfo.x, clickInfo.y);
+}
+
+void PlotMarker(const PlotMarkerConfig& markerConfig, double xVal, double yVal) noexcept
+{
+    IM_ASSERT_USER_ERROR(!gConfigStack.empty(), "BeginPlot() needs to be called before PlotMarker()");
+    IM_ASSERT(gConfigStack.size() == gInternalConfigStack.size());
+
+    auto config = gConfigStack.top();
+    auto internalConfig = gInternalConfigStack.top();
+
+    if (!config.xAxisConfig.isInAxisRange(xVal) || !config.yAxisConfig.isInAxisRange(yVal)) {
+        return;
+    }
+
+    float x = config.xAxisConfig.valueToPixel(xVal, internalConfig.innerBb.GetWidth());
+    float y = config.yAxisConfig.valueToPixel(yVal, internalConfig.innerBb.GetHeight());
+
+    if (markerConfig.drawXLine) {
+        ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(0.0F, internalConfig.innerBb.GetHeight() - y);
+        ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(x, internalConfig.innerBb.GetHeight() - y);
+        internalConfig.window->DrawList->AddLine(p0, p1, markerConfig.color, 1.0F);
+    }
+    if (markerConfig.drawYLine) {
+        ImVec2 p0 = internalConfig.innerBb.Min + ImVec2(x, internalConfig.innerBb.GetHeight());
+        ImVec2 p1 = internalConfig.innerBb.Min + ImVec2(x, internalConfig.innerBb.GetHeight() - y);
+        internalConfig.window->DrawList->AddLine(p0, p1, markerConfig.color, 1.0F);
+    }
+
+    std::string text;
+    if (markerConfig.enableCustomLabel) {
+        text = markerConfig.customLabel;
+    } else {
+        text = toStringPrecision(xVal, config.xAxisConfig.precision);
+        text += ": " + toStringPrecision(yVal, config.yAxisConfig.precision);
+    }
+
+    ImColor textColor = markerConfig.color;
+    if (markerConfig.enableLabelBackground) {
+        textColor = ImColor(0.0F, 0.0F, 0.0F);
+        auto textSize = ImGui::CalcTextSize(text.c_str());
+        auto p0 = ImVec2(x, internalConfig.innerBb.GetHeight() - y) + internalConfig.innerBb.Min;
+        auto p1 = ImVec2(x + textSize.x + 10.0F, internalConfig.innerBb.GetHeight() - y + textSize.y + 10.0F) + internalConfig.innerBb.Min;
+        auto textBox = ImRect(p0, p1);
+        internalConfig.window->DrawList->AddRectFilled(textBox.Min, textBox.Max, markerConfig.color);
+        internalConfig.window->DrawList->AddRect(textBox.Min, textBox.Max, ImGui::GetColorU32(ImGuiCol_Border));
+    }
+    auto textPos = ImVec2(x + 5.0F, internalConfig.innerBb.GetHeight() - y + 5.0F) + internalConfig.innerBb.Min;
+    internalConfig.window->DrawList->AddText(textPos, textColor, text.c_str());
 }
 
 void EndPlot() noexcept

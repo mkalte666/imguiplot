@@ -116,4 +116,19 @@ struct PlotSourceConfig {
     AntiAliasingBehaviour antiAliasingBehaviour = AntiAliasingBehaviour::Nearest;
 };
 
+struct PlotMarkerConfig {
+    /// color
+    ImColor color;
+    /// if a line on the x axis is drawn
+    bool drawXLine = false;
+    /// if a line on the y axis is drawn
+    bool drawYLine = false;
+    /// if the label should have a background
+    bool enableLabelBackground = true;
+    /// if the label should be custom
+    bool enableCustomLabel = false;
+    /// the custom tooltip. Shown if enabled
+    std::string customLabel = {};
+};
+
 #endif // imguiplot_imguiplot_h

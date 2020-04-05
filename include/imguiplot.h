@@ -58,6 +58,21 @@ void BeginPlot(const PlotConfig& config) noexcept;
 PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept;
 
 /**
+ * \brief Draws a plot click marker into the plot
+ * \param markerConfig config for the marker
+ * \param clickInfo click that this marker is drawn at
+ */
+void PlotMarker(const PlotMarkerConfig& markerConfig, const PlotClickInfo& clickInfo) noexcept;
+
+/**
+ * \brief Draws a plot marker into the plot
+ * \param markerConfig the config for the marker
+ * \param xVal the x value to draw this marker at
+ * \param yVal the y value to draw this marker at
+ */
+void PlotMarker(const PlotMarkerConfig& markerConfig, double xVal, double yVal) noexcept;
+
+/**
  * \brief Ends a plot
  */
 void EndPlot() noexcept;
