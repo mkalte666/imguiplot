@@ -83,6 +83,8 @@ struct PlotConfig {
     float lineThickness = 1.0F;
     /// active plot line thickness
     float activeLineThickness = 2.0;
+    /// if any y-value jumps are larger than this, the line is not drawn
+    double maxLineJumpDistance = std::numeric_limits<double>::max();
 
     /// X axis config
     AxisConfig xAxisConfig = {};

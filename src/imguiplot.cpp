@@ -110,12 +110,17 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
 
     float lastX = 0.0F;
     float lastY = 0.0F;
+    double lastYValue = 0.0;
     for (int x = 0; x < static_cast<int>(internalConfig.innerBb.GetWidth()); x++) {
         auto newX = static_cast<float>(x);
         double yValue = getAntiAliasingValue(callback, config, sourceConfig, newX, internalConfig.innerBb.GetWidth());
         auto newY = config.yAxisConfig.valueToPixel(yValue, internalConfig.innerBb.GetHeight());
 
-        if (x != 0 && config.yAxisConfig.isInAxisRange(yValue)) {
+        if (
+            x != 0 &&
+            config.yAxisConfig.isInAxisRange(yValue) &&
+            std::abs(lastYValue-yValue) < config.maxLineJumpDistance)
+        {
             ImVec2 pos1 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(newX), internalConfig.innerBb.GetHeight() - static_cast<float>(newY));
             ImVec2 pos0 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(lastX), internalConfig.innerBb.GetHeight() - static_cast<float>(lastY));
             internalConfig.window->DrawList->AddLine(pos0, pos1, sourceConfig.color, thickness);
@@ -123,6 +128,7 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
 
         lastX = newX;
         lastY = newY;
+        lastYValue = yValue;
     }
 
     if (sourceConfig.active && hovered && internalConfig.innerBb.Contains(GImGui->IO.MousePos)) {
