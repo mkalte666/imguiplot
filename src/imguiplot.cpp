@@ -56,7 +56,7 @@ void BeginPlot(const PlotConfig& config) noexcept
 
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
-    internalConfig.labelSize = ImGui::CalcTextSize(config.label.c_str(), NULL, true);
+    internalConfig.labelSize = ImVec2(0.0F, 0.0F);
     internalConfig.frameBb = ImRect(internalConfig.window->DC.CursorPos, internalConfig.window->DC.CursorPos + config.size);
     internalConfig.innerBb = ImRect(internalConfig.frameBb.Min + style.FramePadding, internalConfig.frameBb.Max - style.FramePadding);
     internalConfig.totalBb = ImRect(internalConfig.frameBb.Min, internalConfig.frameBb.Max + ImVec2(internalConfig.labelSize.x > 0.0f ? style.ItemInnerSpacing.x + internalConfig.labelSize.x : 0.0f, 10.0F));
