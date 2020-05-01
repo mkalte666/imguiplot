@@ -32,6 +32,7 @@ std::string toStringPrecision(T value, long precision)
 }
 
 struct InternalPlotConfig {
+    bool canDraw = true;
     ImVec2 labelSize = {};
     ImRect frameBb = {};
     ImRect innerBb = {};
@@ -51,6 +52,8 @@ void BeginPlot(const PlotConfig& config) noexcept
     internalConfig.skipped = internalConfig.window->SkipItems;
 
     if (internalConfig.skipped) {
+        internalConfig.canDraw = false;
+        gInternalConfigStack.push(internalConfig);
         return;
     }
 
@@ -84,7 +87,7 @@ void BeginPlot(const PlotConfig& config) noexcept
 
     ImGui::ItemSize(internalConfig.totalBb, style.FramePadding.y);
     if (!ImGui::ItemAdd(internalConfig.totalBb, 0, &internalConfig.frameBb)) {
-        return;
+        internalConfig.canDraw = false;
     };
 
     gInternalConfigStack.push(internalConfig);
@@ -98,6 +101,10 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
     PlotClickInfo clickInfo;
     auto config = gConfigStack.top();
     auto internalConfig = gInternalConfigStack.top();
+
+    if (!internalConfig.canDraw) {
+        return clickInfo;
+    }
 
     const ImGuiID id = internalConfig.window->GetID(config.label.c_str());
     const bool hovered = ImGui::ItemHoverable(internalConfig.frameBb, id);
@@ -117,10 +124,7 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
         auto newY = config.yAxisConfig.valueToPixel(yValue, internalConfig.innerBb.GetHeight());
 
         if (
-            x != 0 &&
-            config.yAxisConfig.isInAxisRange(yValue) &&
-            std::abs(lastYValue-yValue) < config.maxLineJumpDistance)
-        {
+            x != 0 && config.yAxisConfig.isInAxisRange(yValue) && std::abs(lastYValue - yValue) < config.maxLineJumpDistance) {
             ImVec2 pos1 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(newX), internalConfig.innerBb.GetHeight() - static_cast<float>(newY));
             ImVec2 pos0 = internalConfig.innerBb.Min + ImVec2(static_cast<float>(lastX), internalConfig.innerBb.GetHeight() - static_cast<float>(lastY));
             internalConfig.window->DrawList->AddLine(pos0, pos1, sourceConfig.color, thickness);
@@ -172,6 +176,10 @@ void PlotMarker(const PlotMarkerConfig& markerConfig, double xVal, double yVal) 
 
     auto config = gConfigStack.top();
     auto internalConfig = gInternalConfigStack.top();
+
+    if (!internalConfig.canDraw) {
+        return;
+    }
 
     if (!config.xAxisConfig.isInAxisRange(xVal) || !config.yAxisConfig.isInAxisRange(yVal)) {
         return;
