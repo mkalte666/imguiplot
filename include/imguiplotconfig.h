@@ -17,10 +17,10 @@
 #ifndef imguiplot_imguiplotconfig_h
 #define imguiplot_imguiplotconfig_h
 
+#include <imgui.h>
+#include <limits>
 #include <string>
 #include <vector>
-
-#include <imgui.h>
 
 /**
  * \brief The Anti aliasing behaviour of a plot
