@@ -59,8 +59,14 @@ void BeginPlot(const PlotConfig& config) noexcept
 
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
+
+    ImVec2 ourSize = config.size;
+    ourSize = ImGui::CalcItemSize(config.size,
+        ImGui::GetContentRegionMaxAbs().x - internalConfig.window->DC.CursorPos.x - style.WindowPadding.x * 2.0F,
+        ImGui::GetContentRegionMaxAbs().y - internalConfig.window->DC.CursorPos.y - style.WindowPadding.y * 2.0F);
+
     internalConfig.labelSize = ImVec2(0.0F, 0.0F);
-    internalConfig.frameBb = ImRect(internalConfig.window->DC.CursorPos, internalConfig.window->DC.CursorPos + config.size);
+    internalConfig.frameBb = ImRect(internalConfig.window->DC.CursorPos, internalConfig.window->DC.CursorPos + ourSize);
     internalConfig.innerBb = ImRect(internalConfig.frameBb.Min + style.FramePadding, internalConfig.frameBb.Max - style.FramePadding);
     internalConfig.totalBb = ImRect(internalConfig.frameBb.Min, internalConfig.frameBb.Max + ImVec2(internalConfig.labelSize.x > 0.0f ? style.ItemInnerSpacing.x + internalConfig.labelSize.x : 0.0f, 10.0F));
     ImGui::RenderFrame(internalConfig.frameBb.Min, internalConfig.frameBb.Max, ImGui::GetColorU32(ImGuiCol_WindowBg), true, style.FrameRounding);
@@ -219,6 +225,14 @@ void PlotMarker(const PlotMarkerConfig& markerConfig, double xVal, double yVal) 
     }
     auto textPos = ImVec2(x + 5.0F, internalConfig.innerBb.GetHeight() - y + 5.0F) + internalConfig.innerBb.Min;
     internalConfig.window->DrawList->AddText(textPos, textColor, text.c_str());
+}
+
+PlotClickInfo PlotContinuous(const PlotSourceConfig& sourceConfig, const PlotValueCallback& callback) noexcept
+{
+    return Plot(sourceConfig, [sourceConfig, callback](size_t idx) {
+        auto x = sourceConfig.xMin + (sourceConfig.xMax - sourceConfig.xMin) * static_cast<double>(idx) / static_cast<double>(sourceConfig.count);
+        return callback(x);
+    });
 }
 
 void EndPlot() noexcept

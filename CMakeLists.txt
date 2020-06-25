@@ -29,14 +29,14 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_CXX_STANDARD 17)
 project(LAA)
 
-set(imguiIncludeDir imgui/ CACHE PATH "Path to imgui headers")
+set(imguiIncludeDir
+    imgui/
+    CACHE PATH "Path to imgui headers")
 
-add_library(imguiplot STATIC 
-        include/imguiplotconfig.h
-        include/imguiplot.h
-        src/imguiplot.cpp
-        src/imguiplotconfig.cpp
-        src/antialiasing.cpp)
+add_library(
+    imguiplot STATIC
+    include/imguiplot.h include/imguiplotconfig.h src/antialiasing.cpp
+    src/imguiplot.cpp src/imguiplotconfig.cpp)
 
 target_include_directories(imguiplot SYSTEM PRIVATE ${imguiIncludeDir})
 target_include_directories(imguiplot PUBLIC include/)
@@ -44,5 +44,5 @@ target_include_directories(imguiplot PUBLIC include/)
 if(WIN32)
     add_definitions(-DNOMINMAX)
 else()
-    enableStrictOptions(imguiplot)
+    enablestrictoptions(imguiplot)
 endif()

@@ -27,6 +27,11 @@
 using PlotCallback = std::function<double(size_t index)>;
 
 /**
+ * \brief Alternative callback used by Plot()
+ */
+using PlotValueCallback = std::function<double(double xValue)>;
+
+/**
  * \brief Struct returned by Plot() that holds infos on if and where a plot was clicked on
  */
 struct PlotClickInfo {
@@ -56,6 +61,14 @@ void BeginPlot(const PlotConfig& config) noexcept;
  * \return
  */
 PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& callback) noexcept;
+
+/**
+ * \brief Plot a continuous function
+ * \param sourceConfig config of the source
+ * \param callback the callback that provides data for the source
+ * \return
+ */
+PlotClickInfo PlotContinuous(const PlotSourceConfig& sourceConfig, const PlotValueCallback& callback) noexcept;
 
 /**
  * \brief Draws a plot click marker into the plot

@@ -17,24 +17,24 @@
 # 3. This notice may not be removed or altered from any source distribution.
 
 function(enableStrictOptions target)
-  target_compile_options(
-    ${target}
-    PRIVATE
-      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-      -Wall
-      -Werror
-      -pedantic-errors
-      -pedantic
-      -Wextra
-      -Wconversion
-      -Wold-style-cast
-      -Wuninitialized
-      -Wunreachable-code
-      -Wshadow
-      -Wfloat-equal
-      -Weffc++
-      -Wsign-conversion>
-      $<$<CXX_COMPILER_ID:MSVC>:
-      /W4
-      /WX>)
+    target_compile_options(
+        ${target}
+        PRIVATE
+            $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+            -Wall
+            -Werror
+            -pedantic-errors
+            -pedantic
+            -Wextra
+            -Wconversion
+            -Wold-style-cast
+            -Wuninitialized
+            -Wunreachable-code
+            -Wshadow
+            -Wfloat-equal
+            -Weffc++
+            -Wsign-conversion>
+            $<$<CXX_COMPILER_ID:MSVC>:
+            /W4
+            /WX>)
 endfunction()
