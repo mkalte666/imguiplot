@@ -90,18 +90,29 @@ std::vector<double> AxisConfig::calcGridValues() const noexcept
         return result;
     }
 
-    auto valUp = gridHint;
-    auto valDown = gridHint;
+    // make sure gridHint actually makes sense so we loop less if its forgotten at 0
+    double valUpStart = gridHint;
+    if (!isInAxisRange(valUpStart)) {
+        valUpStart = floor(min / gridInterval) * gridInterval;
+    }
+    auto valDownStart = gridHint;
+    if (!isInAxisRange(valDownStart)) {
+        valDownStart = ceil(max / gridInterval) * gridInterval;
+    }
+
+    // our loop vars
+    auto valUp = valUpStart;
+    auto valDown = valDownStart;
     for (long i = 0; valUp < max || valDown > min; ++i) {
-        if (valUp < max) {
+        if (isInAxisRange(valUp)) {
             result.push_back(valUp);
         }
 
-        if (i != 0 && valDown > min) {
+        if (i != 0 && isInAxisRange(valDown)) {
             result.push_back(valDown);
         }
-        valUp = gridHint + static_cast<double>(i) * gridInterval;
-        valDown = gridHint - static_cast<double>(i) * gridInterval;
+        valUp = valUpStart + static_cast<double>(i) * gridInterval;
+        valDown = valDownStart - static_cast<double>(i) * gridInterval;
     }
 
     return result;
