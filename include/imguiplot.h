@@ -43,6 +43,8 @@ struct PlotClickInfo {
     double y = 0.0;
     /// the index where the click happend
     size_t index = 0;
+    /// the button that was clicked
+    ImGuiMouseButton button = {};
 
     /// returns true if ckicked is true, for convenience
     explicit operator bool() const noexcept;

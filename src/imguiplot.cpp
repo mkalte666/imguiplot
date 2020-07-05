@@ -156,10 +156,13 @@ PlotClickInfo Plot(const PlotSourceConfig& sourceConfig, const PlotCallback& cal
         ImGui::TextColored(sourceConfig.color, "%f: %f", xVal, v);
         ImGui::End();
 
-        if (ImGui::IsItemClicked()) {
-            clickInfo.clicked = true;
-            clickInfo.x = xVal;
-            clickInfo.y = v;
+        for (ImGuiMouseButton button = 0; button < ImGuiMouseButton_COUNT; ++button) {
+            if (ImGui::IsMouseClicked(button)) {
+                clickInfo.clicked = true;
+                clickInfo.x = xVal;
+                clickInfo.y = v;
+                clickInfo.button = button;
+            }
         }
     }
 
